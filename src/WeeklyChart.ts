@@ -22,28 +22,10 @@ export default class WeeklyChart {
 
     const startOfTheWeek = dayjs().startOf("week");
     for (let i = 0; i < 7; i++) {
-      const point = this.createPoint(
-        100 * Math.random(),
-        startOfTheWeek.add(i, "day").toDate(),
-      );
+      const pointValue = 100 * Math.random();
+      this.points.push([pointValue, startOfTheWeek.add(i, "day").toDate()]);
 
-      const dataPoint = document.createElement("div");
-
-      const topDistance =
-        this.containerHeight - point[0] * (this.containerHeight / 100);
-
-      const dayWidth = this.containerWidth / 7;
-      const horizontalOffset = dayWidth / 2;
-      const leftDistance = i * dayWidth + horizontalOffset;
-
-      dataPoint.className = "absolute rounded outline-4 outline-stone-500";
-
-      dataPoint.style.top = `${topDistance}px`;
-      dataPoint.style.left = `${leftDistance}px`;
-
-      if (this.container) {
-        this.container.appendChild(dataPoint);
-      }
+      this.drawPoint(i, pointValue);
     }
   }
 
@@ -51,5 +33,34 @@ export default class WeeklyChart {
     const point: Point = [value, date];
     this.points.push(point);
     return point;
+  }
+
+  public addPoint(value: number, date: Date): void {
+    this.points.push([value, date]);
+    const passedDate = dayjs(date);
+    const currentDate = dayjs();
+
+    if (passedDate.isSame(currentDate, "week")) {
+      this.drawPoint(passedDate.day(), value);
+    }
+  }
+
+  private drawPoint(weekday: number, value: number): void {
+    const dataPoint = document.createElement("div");
+
+    const bottomDistance = value * (this.containerHeight / 100);
+
+    const dayWidth = this.containerWidth / 7;
+    const horizontalOffset = dayWidth / 2;
+    const leftDistance = weekday * dayWidth + horizontalOffset;
+
+    dataPoint.className = "absolute rounded outline-4 outline-stone-500";
+
+    dataPoint.style.bottom = `${bottomDistance}px`;
+    dataPoint.style.left = `${leftDistance}px`;
+
+    if (this.container) {
+      this.container.appendChild(dataPoint);
+    }
   }
 }
