@@ -29,12 +29,6 @@ export default class WeeklyChart {
     }
   }
 
-  private createPoint(value: number, date: Date): Point {
-    const point: Point = [value, date];
-    this.points.push(point);
-    return point;
-  }
-
   public addPoint(value: number, date: Date): void {
     this.points.push([value, date]);
     const passedDate = dayjs(date);
